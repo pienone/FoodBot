@@ -27,7 +27,7 @@ def decode(image):
     except:
         return(None)
 
-
+# use openfoodfacts API
 def get_categories_names(barcode):
     requestURL="https://world.openfoodfacts.org/api/v2/product/"+barcode+"&json=true"
     response=requests.get(requestURL)
@@ -41,14 +41,11 @@ def get_categories_names(barcode):
     except:
         return('Food not found')
 
-
+# use Openfoodfacts API
 def photo(update, context):
     file = context.bot.get_file(update.message.photo[-1].file_id)
     print('ok')
     f =  BytesIO(file.download_as_bytearray())
-    print(f)
-    # f is now a file object you can do something with
-
     result = decode(f)
     if result==None:
         response = 'No barcode found, please send a better picture'
@@ -58,10 +55,9 @@ def photo(update, context):
             response = f'The barcode is {result}, nutriscore: {nutriscore}. \nIngredients are {ingr}. \nAllergens: {allerg}.'
         except:
             response = 'Food not found'
-
     context.bot.send_message(chat_id=update.message.chat_id, text=response)
 
-
+# photo handler
 photo_handler = MessageHandler(Filters.photo, photo)
 dispatcher.add_handler(photo_handler)
 
